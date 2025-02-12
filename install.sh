@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "lolight Install  written by Claude Pageau"
+echo "lolight Install written by Claude Pageau"
 cd ~
 mkdir -p lolight
 cd lolight
@@ -30,8 +30,7 @@ echo "
 How to Run
 ==========
 In SSH or Terminal session
-Edit config.py CAMERA and related settings
-for RPI Legacy, Libcam or RTSP IP Camera per comments
+Edit config.py lolight settings
 
     cd ~/lolight
     ./lolight.py
@@ -58,6 +57,6 @@ Run in Background in existing terminal
 
 Access webserver with a web browser at URL per Foreground command.
 
-Form More Info See https://github.com/pageauc/motrack2
+Form More Info See https://github.com/pageauc/lolight
 "
 
