@@ -4,7 +4,7 @@
 # Add the following command to the /etc/rc.local
 # /home/pi/motrack2/webserver.sh start
 
-progpath="/home/pi/motrack2"
+progpath="/home/pi/lolight"
 progname="webserver.py"
 
 echo "$0 ver 6.02 written by Claude Pageau"
