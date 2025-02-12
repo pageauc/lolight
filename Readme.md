@@ -6,7 +6,7 @@ Written as a test/learning program to help convert pi-timolo https://github.com/
 to use the picamera2 python3 module.
 Different methods were tried for automating settings for low light/day light timelapse images.
 This program was useful for trying and testing differnt ideas.
-I cleaned it up a bit and will post on GitHub to share with others who may find it useful.
+I cleaned it up a bit and posted on GitHub to share with others who may find it useful.
 
 ## Install or Upgrade
 ***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
