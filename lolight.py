@@ -22,7 +22,7 @@ The video stream is stopped just before the timelapse image is taken, and
 restarted after.  There is some error trapping to retry camera start if required.
 
 """
-PROG_VER = 'ver 1.0'
+PROG_VER = 'ver 1.1'
 import os
 PROG_NAME = os.path.basename(__file__)
 print(f'{PROG_NAME} {PROG_VER} written by Claude Pageau  Loading ...\n')
@@ -118,7 +118,7 @@ def getImageFilename(path, prefix, pxAve):
 
 
 # ------------------------------------------------------------------------------
-def takeImage(filepath, im_data):
+def takeImage(im_data):
     """
     Get camera settings, configure camera for dark or bright conditions based on pxAve
     Take and save still image
@@ -136,11 +136,11 @@ def takeImage(filepath, im_data):
             picam2.configure(config)
         except RuntimeError:
             retries += 1
-            print('Camera Error. Could Not Configure')
-            print(f'Retry {retries} of {total_retries}')
+            print('WARN  :Camera Error. Could Not Configure')
+            print(f'WARN  :Retry {retries} of {total_retries}')
             picam2.close()  # Close the camera instance
             if retries > total_retries:
-                print('Retries Exceeded. Exiting Due to Camera Problem. ')
+                print('ERROR: Retries Exceeded. Exiting Due to Camera Problem. ')
                 sys.exit(1)
             else:
                 time.sleep(4)
@@ -157,12 +157,13 @@ def takeImage(filepath, im_data):
     if analogue_gain < 1:  # set for daylight. Auto is 0
         time.sleep(4) # Allow time for camera warm up
     else:
-        print(f'Low Light {pxAve}/{DARK_START_PXAVE} pxAve')
+        print(f'INFO  : Low Light {pxAve}/{DARK_START_PXAVE} pxAve')
         time.sleep(DARK_GAIN) # Allow time for camera to adjust for long exposure
-
-    print(f"ImageSize=({IM_W}x{IM_H}) vflip={IMAGE_VFLIP} hflip={IMAGE_HFLIP}")
-    print(f"pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Auto is 0")
-    print(f"Save Image to {filepath}")
+        
+    filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
+    print(f"INFO  : ImageSize=({IM_W}x{IM_H}) vflip={IM_VFLIP} hflip={IM_HFLIP}")
+    print(f"INFO  : pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Auto is 0")
+    print(f"INFO  : Save Image to {filepath}")
     picam2.capture_file(filepath)      # Capture the image
     picam2.close()  # Close the camera instance
 
@@ -177,14 +178,12 @@ if __name__ == "__main__":
                    vflip=True,
                    hflip=True).start()
             print('INFO  : Video Stream Thread is Running.')                   
-            print(f'INFO  : Waiting {IM_TIMELAPSE_DELAY_SEC} seconds for Next Timelapse')
-            print('        Press Ctrl-c to Exit')
+            print(f'INFO  : Wait {IM_TIMELAPSE_DELAY_SEC} sec for Next Timelapse. Ctrl-c Exits')
             time.sleep(IM_TIMELAPSE_DELAY_SEC)
             print('INFO  : Read a Video Stream Frame for pxAve Calculation')
             im_data = vs.read()
             print('INFO  : Stop Video Stream Thread')
             vs.stop()
-            filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
             takeImage(filepath, im_data)
     except KeyboardInterrupt:
         print('\nUser Pressed Ctrl-C to Exit')
