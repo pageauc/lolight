@@ -41,10 +41,10 @@ import numpy as np
 # Image Settings
 IM_TIMELAPSE_DELAY_SEC = 120
 IM_PREFIX = "LO-"    # File name prefix
-IM_W = 1920   
+IM_W = 1920
 IM_H = 1080
-IM_FORMAT = ".jpg"   # Default= ".jpg"  other Formats .jpeg .png .gif .bmp 
-IM_VFLIP = True  # flip image vertically    
+IM_FORMAT = ".jpg"   # Default= ".jpg"  other Formats .jpeg .png .gif .bmp
+IM_VFLIP = True  # flip image vertically
 IM_HFLIP = True  # flip image horizontally  Decided not to use rotate.
 IM_DIR = 'media/lowlight/'  # directory to save images (add trailing forward slash
 
@@ -84,7 +84,7 @@ def getStreamPixAve(streamData):
 
 # ------------------------------------------------------------------------------
 def getExposureSettings(pxAve):
-    """ 
+    """
     Use the pxAve and DARK_START_PXAVE threshold to set
     analogue_gain for day or darkness
     """
@@ -159,7 +159,7 @@ def takeImage(im_data):
     else:
         print(f'INFO  : Low Light {pxAve}/{DARK_START_PXAVE} pxAve')
         time.sleep(DARK_GAIN) # Allow time for camera to adjust for long exposure
-        
+
     filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
     print(f"INFO  : ImageSize=({IM_W}x{IM_H}) vflip={IM_VFLIP} hflip={IM_HFLIP}")
     print(f"INFO  : pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Auto is 0")
@@ -177,14 +177,14 @@ if __name__ == "__main__":
             vs = CamStream(size=(320, 240),
                    vflip=True,
                    hflip=True).start()
-            print('INFO  : Video Stream Thread is Running.')                   
+            print('INFO  : Video Stream Thread is Running.')
             print(f'INFO  : Wait {IM_TIMELAPSE_DELAY_SEC} sec for Next Timelapse. Ctrl-c Exits')
             time.sleep(IM_TIMELAPSE_DELAY_SEC)
             print('INFO  : Read a Video Stream Frame for pxAve Calculation')
             im_data = vs.read()
             print('INFO  : Stop Video Stream Thread')
             vs.stop()
-            takeImage(filepath, im_data)
+            takeImage(im_data)
     except KeyboardInterrupt:
         print('\nUser Pressed Ctrl-C to Exit')
     finally:
