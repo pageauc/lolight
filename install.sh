@@ -58,6 +58,6 @@ Run in Background in existing terminal
 
 Access webserver with a web browser at URL per Foreground command.
 
-Form More Info See https://github.com/pageauc/lolight
+For More Info See https://github.com/pageauc/lolight
 "
 
