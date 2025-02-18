@@ -22,7 +22,7 @@ The video stream is stopped just before the timelapse image is taken, and
 restarted after.  There is some error trapping to retry camera start if required.
 
 """
-PROG_VER = 'ver 0.9'
+PROG_VER = 'ver 1.0'
 import os
 PROG_NAME = os.path.basename(__file__)
 print(f'{PROG_NAME} {PROG_VER} written by Claude Pageau  Loading ...\n')
@@ -60,6 +60,7 @@ SEC_TO_MICROSEC = 1000000     # 1 second=10000000 microseconds
 if DARK_GAIN > 16:
     DARK_GAIN = 16
 
+
 # ------------------------------------------------------------------------------
 def makeDirs(dirPath='media/images'):
     if not os.path.isdir(dirPath):
@@ -70,6 +71,7 @@ def makeDirs(dirPath='media/images'):
             print(f"Could Not Create {dirPath} {err}")
             sys.exit(1)
 
+
 # ------------------------------------------------------------------------------
 def getStreamPixAve(streamData):
     """
@@ -78,6 +80,7 @@ def getStreamPixAve(streamData):
     """
     pixAverage = int(np.average(streamData[..., 1]))  # Use 0=red 1=green 2=blue
     return pixAverage
+
 
 # ------------------------------------------------------------------------------
 def getExposureSettings(pxAve):
@@ -93,6 +96,7 @@ def getExposureSettings(pxAve):
         exposure_microsec = int(exposure_sec * (DARK_START_PXAVE - pxAve) * SEC_TO_MICROSEC)
         analogue_gain = DARK_GAIN
     return exposure_microsec, analogue_gain
+
 
 # ------------------------------------------------------------------------------
 def getImageFilename(path, prefix, pxAve):
@@ -112,40 +116,58 @@ def getImageFilename(path, prefix, pxAve):
     )
     return filename
 
+
 # ------------------------------------------------------------------------------
-def takeImage():
-    """Get camera settings, configure camera, take and save still image"""
+def takeImage(filepath, im_data):
+    """
+    Get camera settings, configure camera for dark or bright conditions based on pxAve
+    Take and save still image
+    """
     pxAve = getStreamPixAve(im_data)
     exposure_microsec, analogue_gain = getExposureSettings(pxAve)
-    # Initialize the camera
-    print('INFO  : Start Camera for Timelapse Image')
-    picam2 = Picamera2()
-    config = picam2.create_preview_configuration({"size": (IM_W, IM_H)},
-                                                  transform=Transform(vflip=IM_VFLIP,
-                                                                      hflip=IM_HFLIP))
-    try:
-        picam2.configure(config)
-    except RuntimeError:
-        print('Camera Busy.  Retrying')
-        time.sleep(5)
-        picam2.configure(config)
-    picam2.set_controls({"ExposureTime": exposure_microsec, "AnalogueGain": analogue_gain})
+    retries = 0
+    total_retries = 3
+    while retries < total_retries:
+        try:
+            picam2 = Picamera2()  # Initialize the camera
+            config = picam2.create_preview_configuration({"size": (IM_W, IM_H)},
+                                                          transform=Transform(vflip=IM_VFLIP,
+                                                                              hflip=IM_HFLIP))
+            picam2.configure(config)
+        except RuntimeError:
+            retries += 1
+            print('Camera Error. Could Not Configure')
+            print(f'Retry {retries} of {total_retries}')
+            picam2.close()  # Close the camera instance
+            if retries > total_retries:
+                print('Retries Exceeded. Exiting Due to Camera Problem. ')
+                sys.exit(1)
+            else:
+                time.sleep(4)
+                continue
+        break
+    picam2.set_controls({"ExposureTime": exposure_microsec,
+                         "AnalogueGain": analogue_gain,
+                         "FrameDurationLimits": (exposure_microsec, exposure_microsec)})
+
+    # picam2.set_controls({"ExposureTime": exposure_microsec, "AnalogueGain": analogue_gain})
     picam2.start()  # Start the camera instance
 
     # Allow some time for the camera to adjust to the light conditions
     if analogue_gain < 1:  # set for daylight. Auto is 0
-        time.sleep(4) 
+        time.sleep(4) # Allow time for camera warm up
     else:
-        print(f'INFO  : Low Light {pxAve}/{DARK_START_PXAVE}')
-        time.sleep(DARK_GAIN) # set for long exposure
+        print(f'Low Light {pxAve}/{DARK_START_PXAVE} pxAve')
+        time.sleep(DARK_GAIN) # Allow time for camera to adjust for long exposure
 
-    print(f"INFO  : ImageSize=({IM_W}x{IM_H}) vflip={IM_VFLIP} hflip={IM_HFLIP}")
-    print(f"INFO  : pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Note: Auto is 0")
-    filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
-    print(f"INFO  : Save Image to {filepath}")
-    picam2.capture_file(filepath)      # Capture the image   
+    print(f"ImageSize=({IM_W}x{IM_H}) vflip={IMAGE_VFLIP} hflip={IMAGE_HFLIP}")
+    print(f"pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Auto is 0")
+    print(f"Save Image to {filepath}")
+    picam2.capture_file(filepath)      # Capture the image
     picam2.close()  # Close the camera instance
 
+
+# ------------------------------------------------------------------------------
 if __name__ == "__main__":
     makeDirs(IM_DIR) # create directories if they do not exist
     try:
@@ -162,7 +184,8 @@ if __name__ == "__main__":
             im_data = vs.read()
             print('INFO  : Stop Video Stream Thread')
             vs.stop()
-            takeImage()
+            filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
+            takeImage(filepath, im_data)
     except KeyboardInterrupt:
         print('\nUser Pressed Ctrl-C to Exit')
     finally:

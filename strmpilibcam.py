@@ -3,7 +3,9 @@
 from picamera2 import Picamera2
 from libcamera import Transform
 import time
+import sys
 from threading import Thread
+
 
 class CamStream:
     '''
@@ -26,9 +28,22 @@ class CamStream:
         self.size = size
         self.vflip = vflip
         self.hflip = hflip
-        self.retries = 3
+        self.retries = 4
         while self.retries > 0:
             self.retries -= 1
+            if self.retries < 1:
+                print("ERROR: Problem Starting RPI Camera Stream Thread")
+                print("       RPI Camera Already in Use.\n")
+                print("       Run ./timolo2.sh status to see if supervisorctl Using.")
+                print("       If so Try command\n")
+                print("       ./timolo2.sh stop\n")
+                print("       and Try Again. Otherwise Check")
+                print("       for something else using camera.")
+                import os
+                prog_path = os.path.abspath(__file__)
+                print(f"Exiting {prog_path}")
+                print("Bye ...")
+                sys.exit(1)
             try:
                 time.sleep(2) # add a wait
                 self.picam2 = Picamera2() # initialize the camera
@@ -40,9 +55,9 @@ class CamStream:
                                                           hflip=self.hflip)))
             except RuntimeError:
                 time.sleep(4)
-                print(f'WARN  : Camera Error. Retrying {self.retries}')
+                print(f'WARN : Camera Error. Retrying {self.retries}')
                 continue
-            break    
+            break
 
         self.picam2.start()
         time.sleep(2) # Allow camera time to warm up

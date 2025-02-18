@@ -20,7 +20,7 @@ DARK_GAIN = 10.0         # analogue_gain (ISO/100) for dark mode.  Max is 16
 
 # Web Server settings
 # -------------------
-WEB_SERVER_PORT = 8090        # Default= 8090 Web server access port eg http://192.168.1.100:8080
+WEB_SERVER_PORT = 8080        # Default= 8090 Web server access port eg http://192.168.1.100:8080
 WEB_SERVER_ROOT = "media"     # Default= "media" webserver root path to webserver image/video su>
 WEB_PAGE_TITLE = "PI-TIMOLO2" # web page title that browser show (not displayed on web page)
 WEB_PAGE_REFRESH_ON = True    # False=Off (never)  Refresh True=On (per seconds below)
