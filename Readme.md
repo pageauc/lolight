@@ -16,13 +16,13 @@ In SSH or Terminal Session run commands below.
     sudo apt upgrade -y
 
 #### Step 1
-Select copy icon on right of Github command box below  
-or Alternatively with mouse left button highlight curl command in code box below. Right click mouse in **highlighted** area and Copy.     
+Select copy icon on right of Github command box below    
 
     curl -L https://raw.github.com/pageauc/lolight/master/install.sh | bash
 
 #### Step 2
-On RPI putty SSH or Terminal session, right click, select paste then Enter to download and run install.sh script.
+On RPI putty SSH or Terminal session, right click, select paste then Enter to download and run install.sh curl script.
+
 
 ***NOTE*** If config.py exists it will Not be overwritten. A config.py.new will be created/updated instead.
 To update existing config.py perform commands below
@@ -31,7 +31,7 @@ To update existing config.py perform commands below
     cp config.py config.py.bak
     cp config.py.new config.py
 
-## Edit Settings
+## Edit/View Settings
 To review and/or change settings execute command below in SSH or terminal session.
 See comments for each variable setting. Ensure camera is installed and working.
 
@@ -42,29 +42,25 @@ To exit nano and save changes press
 
     ctrl-x y
 
-## Run lolight
-  Open putty SSH or Terminal session then execute command below.
-
-    cd ~/lolight
-    ./lolight.py
-
-If camera is working motion tracking logging information will be displayed.
-
-## WebServer
-Webserver.py will display saved motrack images from any network device using a web browser.
-
-#### Foreground
+#### Run in Foreground
 To Run in Foreground open a new SSH or Terminal Session then execute command below.
 
     ./webserver.py
 
-NOTE browser URL:PORT for accessing MoTrack web page will be displayed.  ctrl-c exits.
+or
 
-#### Background
+	./lolight.py
+
+NOTE browser URL:PORT for accessing lolight web page will be displayed.  Ctrl-c exits.
+
+#### Run in Background
 To Run in Background execute command below in current SSH or Terminal Session. 
-Then execute motrack.py in same terminal session per above.
 
     ./webserver.sh start
+	
+	and/or
+	
+	./lolight.sh start
 
 Access webserver with a web browser at provided URL and port  eg http://192.168.1.128:8090 or http://rpiname.local:8090
 
@@ -78,10 +74,10 @@ Takes timelapse images and saves in date name format to specified dirctory folde
 A video stream thread is run. Just before taking image a frame is read
 from the video stream and the pixel average value is calculated using numpy.
 This is compared to the darkness threshold DARK_START_PXAVE. Normally about 32 but
-can be adjusted up or down. If the pxAve is below DARK_START_PXAVE then the camera
+can be adjusted up or down in ***config.py***  If the pxAve is below DARK_START_PXAVE then the camera
 is put into low light mode. The exposure time in micro seconds is calculated.
 Lower pxAve means higher exposure time up to the cameras maximum exposure time.
-see getExposureSettings function below for details.
+see getExposureSettings function in lolight.py python code for details.
 
 The video stream is stopped just before the timelapse image is taken, and
 restarted after.  There is some error trapping to retry camera start if required.
