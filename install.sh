@@ -7,6 +7,7 @@ mkdir -p media
 
 echo "INFO  : Download Project Files ..."
 wget -O lolight.py -q --show-progress https://raw.github.com/pageauc/lolight/master/lolight.py
+wget -O lolight.sh -q --show-progress https://raw.github.com/pageauc/lolight/master/lolight.sh
 wget -O webserver.py -q --show-progress https://raw.github.com/pageauc/lolight/master/webserver.py
 wget -O webserver.sh -q --show-progress https://raw.github.com/pageauc/lolight/master/webserver.sh
 wget -O strmpilibcam.py -q --show-progress https://raw.github.com/pageauc/lolight/master/strmpilibcam.py
