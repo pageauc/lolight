@@ -9,14 +9,15 @@ This program was useful for trying and testing differnt ideas.
 I cleaned it up a bit and posted on GitHub to share with others who may find it useful.
 
 ## Install or Upgrade
-***IMPORTANT*** - Update Raspberry Pi Operating System To ensure your system is up-to-date.
+Update Raspberry Pi Operating System Bulleye, Bookwork or later.
+
 In SSH or Terminal Session run commands below.
 
     sudo apt update
     sudo apt upgrade -y
 
 #### Step 1
-Select copy icon on right of Github command box below    
+Select copy icon on right of Github command box below
 
     curl -L https://raw.github.com/pageauc/lolight/master/install.sh | bash
 
@@ -54,12 +55,12 @@ or
 NOTE browser URL:PORT for accessing lolight web page will be displayed.  Ctrl-c exits.
 
 #### Run in Background
-To Run in Background execute command below in current SSH or Terminal Session. 
+To Run in Background execute command below in current SSH or Terminal Session.
 
     ./webserver.sh start
-	
+
 	and/or
-	
+
 	./lolight.sh start
 
 Access webserver with a web browser at provided URL and port  eg http://192.168.1.128:8090 or http://rpiname.local:8090
