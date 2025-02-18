@@ -1,5 +1,5 @@
-# lolight.py
-#### python3 picamera2 Create Low Light Timelapse Images Demo
+# lolight.py 
+#### python3 picamera2 Create Low Light Timelapse Images Demo. Adjust for changing lighting condition.
 
 ## Introduction
 Written as a test/learning program to help convert pi-timolo https://github.com/pageauc/pi-timolo
