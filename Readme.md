@@ -3,7 +3,7 @@
 
 ## Introduction
 Written as a test/learning program to help convert pi-timolo https://github.com/pageauc/pi-timolo
-to use the picamera2 python3 module.
+to use the picamera2 python3 module see https://github.com/pageauc/pi-timolo2.
 Different methods were tried for automating settings for low light/day light timelapse images.
 This program was useful for trying and testing differnt ideas.
 I cleaned it up a bit and posted on GitHub to share with others who may find it useful.
