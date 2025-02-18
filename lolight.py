@@ -161,9 +161,11 @@ def takeImage(im_data):
         time.sleep(DARK_GAIN) # Allow time for camera to adjust for long exposure
 
     filepath = getImageFilename(IM_DIR, IM_PREFIX, pxAve)
+    print(f"------------- {filepath} -------------")
     print(f"INFO  : ImageSize=({IM_W}x{IM_H}) vflip={IM_VFLIP} hflip={IM_HFLIP}")
     print(f"INFO  : pxAve={pxAve}, Exposure={exposure_microsec} microsec, Gain={analogue_gain} Auto is 0")
     print(f"INFO  : Save Image to {filepath}")
+    print("----------------------------------------------------------------------------------------")
     picam2.capture_file(filepath)      # Capture the image
     picam2.close()  # Close the camera instance
 
